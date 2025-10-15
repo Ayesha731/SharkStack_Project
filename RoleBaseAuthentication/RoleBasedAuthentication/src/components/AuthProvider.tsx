@@ -9,8 +9,9 @@ import {
 } from "react";
 
 type AuthContext = {
-  authToken?: string | null;
-  currentUser?: User | null;
+  authToken: string | null;
+  currentUser: User | null;
+  isLoading: boolean;
   handleLogin: () => Promise<void>;
   handleLogout: () => Promise<void>;
 };
@@ -20,8 +21,9 @@ const AuthContext = createContext<AuthContext | undefined>(undefined);
 type AuthProviderProps = PropsWithChildren;
 
 export default function AuthProvider({ children }: AuthProviderProps) {
-  const [authToken, setAuthToken] = useState<string | null>();
-  const [currentUser, setCurrentUser] = useState<User | null>();
+  const [authToken, setAuthToken] = useState<string | null>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchUser() {
@@ -35,6 +37,8 @@ export default function AuthProvider({ children }: AuthProviderProps) {
       } catch {
         setAuthToken(null);
         setCurrentUser(null);
+      } finally {
+        setIsLoading(false);
       }
     }
 
@@ -65,6 +69,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
       value={{
         authToken,
         currentUser,
+        isLoading,
         handleLogin,
         handleLogout,
       }}

@@ -1,18 +1,18 @@
-import { User } from "@/types/user";
+import { UserRole } from "../types/user";
 import { PropsWithChildren } from "react";
 import { useAuth } from "./AuthProvider";
 
 type ProtectedRouteProps = PropsWithChildren & {
-  allowedRoles?: User["role"][];
+  allowedRoles?: UserRole[];
 };
 
 export default function ProtectedRoute({
   allowedRoles,
   children,
 }: ProtectedRouteProps) {
-  const { currentUser } = useAuth();
+  const { currentUser, isLoading } = useAuth();
 
-  if (currentUser === undefined) {
+  if (isLoading) {
     return <div>Loading...</div>;
   }
 
